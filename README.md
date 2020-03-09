@@ -1,6 +1,6 @@
 # interpolate
 
-[![npm version][https://img.shields.io/npm/v/@zuze/interpolate.svg]][https://npmjs.org/package/@zuze/interpolate]
+[![npm version](https://img.shields.io/npm/v/@zuze/interpolate.svg)](https://npmjs.org/package/@zuze/interpolate)
 [![Coverage Status](https://coveralls.io/repos/github/zuze-lab/interpolate/badge.svg)](https://coveralls.io/github/zuze-lab/interpolate)
 [![Build Status](https://travis-ci.org/zuze-lab/interpolate.svg)](https://travis-ci.org/zuze-lab/interpolate)
 

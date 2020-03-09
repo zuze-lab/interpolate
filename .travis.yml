@@ -5,5 +5,5 @@ node_js:
 jobs: 
   include:
     - script: yarn lint
-    - script: yarn test --coverage
+    - script: yarn test
     - script: yarn build

@@ -20,7 +20,7 @@
   "scripts": {
     "build": "rimraf build && rollup -c",
     "lint": "eslint src",
-    "test": "jest"
+    "test": "jest && codecov"
   },
   "author": "Adam Jenkins",
   "license": "ISC",
@@ -36,6 +36,7 @@
     "@rollup/plugin-node-resolve": "^6.0.0",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^25.1.0",
+    "codecov": "^3.6.5",
     "eslint": "^6.4.0",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-import": "^2.18.2",

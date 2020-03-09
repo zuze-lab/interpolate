@@ -20,7 +20,7 @@
   "scripts": {
     "build": "rimraf build && rollup -c",
     "lint": "eslint src",
-    "test:ci": "jest --coverage && codecov",
+    "test:ci": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "test": "jest"
   },
   "author": "Adam Jenkins",
@@ -37,7 +37,7 @@
     "@rollup/plugin-node-resolve": "^6.0.0",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^25.1.0",
-    "codecov": "^3.6.5",
+    "coveralls": "^3.0.9",
     "eslint": "^6.4.0",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-import": "^2.18.2",

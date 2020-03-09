@@ -20,7 +20,8 @@
   "scripts": {
     "build": "rimraf build && rollup -c",
     "lint": "eslint src",
-    "test": "jest && codecov"
+    "test:ci": "jest --coverage && codecov",
+    "test": "jest"
   },
   "author": "Adam Jenkins",
   "license": "ISC",

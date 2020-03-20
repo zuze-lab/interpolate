@@ -7,12 +7,12 @@
 Interpolate is used to map a template (`string`, `array`, `object`) and value to an object representation **and back again**.
 
 ```js
-import { to, from } from '@zuze/interpolate';
+import { interpolate, unterpolate } from '@zuze/interpolate';
 
 const template = '{year}-{month}-{day}';
 const interpolated = '2019-10-01';
 
-to(template,interpolated) 
+unterpolate(template,interpolated) 
 /*
 {
     year:'2019',
@@ -21,7 +21,7 @@ to(template,interpolated)
 }
 */
 
-from(template,{
+interpolate(template,{
     year:'2019',
     month:'10',
     day:'01'
@@ -47,6 +47,11 @@ yarn add @zuze/interpolate
 Interpolations are ubiquitous, from the first templating engines, to internationalization, etc.
 
 Interpolations don't have to just work for creating strings, however. With the right tools, it can be used to create more complex data transformations, which is the purpose of `interpolate`.
+
+## Aliases
+
+- **`to === unterpolate`** - map a template and a value to an object
+- **`from === interpolate`** - map an object to a template
 
 ### simple string mapping
 

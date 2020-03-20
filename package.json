@@ -1,6 +1,6 @@
 {
   "name": "@zuze/interpolate",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Map any template containing interpolations to an object and back",
   "main": "build/cjs/index.js",
   "module": "build/esm/index.js",

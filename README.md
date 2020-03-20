@@ -48,10 +48,10 @@ Interpolations are ubiquitous, from the first templating engines, to internation
 
 Interpolations don't have to just work for creating strings, however. With the right tools, it can be used to create more complex data transformations, which is the purpose of `interpolate`.
 
-## Aliases
+### Aliases
 
-- **`to === unterpolate`** - map a template and a value to an object
-- **`from === interpolate`** - map an object to a template
+- **`to === unterpolate`** - map a template and an interpolated value to an object
+- **`from === interpolate`** - map an object using a template to an interpolated value
 
 ### simple string mapping
 

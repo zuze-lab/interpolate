@@ -19,6 +19,7 @@
   ],
   "homepage": "https://github.com/zuze-lab/interpolate",
   "scripts": {
+    "prepublishOnly": "yarn test && yarn build",
     "build": "rimraf build && rollup -c",
     "lint": "eslint src",
     "test:ci": "jest --coverage --coverageReporters=text-lcov | coveralls",
@@ -29,7 +30,7 @@
   "dependencies": {
     "@babel/runtime": "7.6.0",
     "flat": "^5.0.0",
-    "property-expr": "^1.5.1"
+    "property-expr": "^2.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",

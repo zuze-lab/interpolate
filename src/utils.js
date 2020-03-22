@@ -1,4 +1,4 @@
-export const interpolate = (template, val, options = {}) => {
+export const interpolate = (template, val, options) => {
   let fullReplacement;
   const match = options.match || MATCHER_REGEX;
   const matched = template.match(match);
@@ -48,7 +48,8 @@ export const unmatch = (template, val, options) => {
       throw new Error(
         `Cannot unterpolate a string template against a non-string value`
       );
-    return { [groups[0]]: val };
+    const o = {};
+    return (o[groups[0]] = val), o;
   }
 
   const matches = val.match(regexp);
@@ -57,18 +58,15 @@ export const unmatch = (template, val, options) => {
   // tried to do this with named capture groups, but characters are restrictive
   // which is why we just use the groups array
   return groups.reduce(
-    (acc, k, idx) => (matches ? { ...acc, [k]: matches[idx + 1] } : acc),
+    (acc, k, idx) => ((acc[k] = matches ? matches[idx + 1] : undefined), acc),
     {}
   );
 };
 
 export const unflatten = obj =>
-  Object.entries(obj).reduce(
-    (acc, [path, val]) => (setter(path)(acc, val), acc),
-    {}
-  );
+  Object.entries(obj).reduce((acc, p) => setter(p[0])(acc, p[1]), {});
 
-// custom setter based on property-expr, but create the patch if it diesn't exist
+// custom getter/setter based on property-expr, but create the path if it doesn't exist
 const setter = path => (obj, val) =>
   normalizePath(path).reduce((data, part, idx, arr) => {
     const nextData = !data[part]

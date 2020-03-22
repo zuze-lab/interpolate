@@ -1,6 +1,6 @@
 {
   "name": "@zuze/interpolate",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Map any template containing interpolations to an object and back",
   "main": "build/cjs/index.js",
   "module": "build/esm/index.js",
@@ -27,9 +27,6 @@
   },
   "author": "Adam Jenkins",
   "license": "ISC",
-  "dependencies": {
-    "@babel/runtime": "7.6.0"
-  },
   "devDependencies": {
     "@babel/core": "^7.6.0",
     "@babel/plugin-transform-runtime": "^7.6.0",

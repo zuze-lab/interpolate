@@ -1,9 +1,9 @@
 import { interpolate } from './utils';
 
 //  child object -> parent value
-const unfrom = (template, val, options) => {
+const unfrom = (template, val, options = {}) => {
   if (typeof template === 'function')
-    return template(val, { ...options, how: 'from' });
+    return template(val, Object.assign(options, { how: 'from' }));
 
   if (typeof template === 'string') return interpolate(template, val, options);
 
@@ -11,10 +11,7 @@ const unfrom = (template, val, options) => {
     return template.map(t => unfrom(t, val, options));
 
   return Object.entries(template).reduce(
-    (acc, [key, v]) => ({
-      ...acc,
-      [key]: unfrom(v, val, options),
-    }),
+    (acc, entry) => ((acc[entry[0]] = unfrom(entry[1], val, options)), acc),
     {}
   );
 };

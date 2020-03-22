@@ -55,13 +55,13 @@ Interpolations don't have to just work for creating strings, however. With the r
 
 ### simple string mapping
 
-In addition to simple string mapping (see the first `to`/`from` example) `interpolate` supports nested transformations care of [flat](https://www.npmjs.com/package/flat) and [property-expr](https://www.npmjs.com/package/property-expr).
+In addition to simple string mapping (see the first `to`/`from` example) `interpolate` supports nested transformations care.
 
 ```js
 import { to, from } from '@zuze/interpolate';
 
 
-const template = '{first.second}-{first.third}-something-{first.fifth.0}';
+const template = '{first.second}-{first.third}-something-{first.fifth[0]}';
 const interpolated = '2019-10-something-01';
 
 to(template,interpolated) 

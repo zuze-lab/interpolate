@@ -59,7 +59,7 @@ describe('unterpolate', () => {
     const template = {
       first: '{first.second}',
       second: '{second}',
-      third: '{first.childA.0}',
+      third: '{first.childA[0]}',
       fourth: ['{a}', 'b', '{c}'],
     };
 

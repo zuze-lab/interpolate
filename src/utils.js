@@ -1,10 +1,6 @@
-import { getter, normalizePath } from 'property-expr';
-
-const matcher = /\{(.+?)\}/g;
-
 export const interpolate = (template, val, options = {}) => {
   let fullReplacement;
-  const match = options.match || matcher;
+  const match = options.match || MATCHER_REGEX;
   const matched = template.match(match);
 
   // template doesn't contain any interpolation points
@@ -30,7 +26,7 @@ export const interpolate = (template, val, options = {}) => {
 };
 
 export const unmatch = (template, val, options) => {
-  const match = options.match || matcher;
+  const match = options.match || MATCHER_REGEX;
   const groups = [];
   // convert a template to a regexp such that
   // {year}-{month}-{day} becomes (.*)-(.*)-(.*)
@@ -76,7 +72,21 @@ export const unflatten = obj =>
 const setter = path => (obj, val) =>
   normalizePath(path).reduce((data, part, idx, arr) => {
     const nextData = !data[part]
-      ? (data[part] = (arr[idx + 1] || '').match(/^\d+$/) ? [] : {})
+      ? (data[part] = (arr[idx + 1] || '').match(DIGIT_REGEX) ? [] : {})
       : data[part];
     return idx === arr.length - 1 ? ((data[part] = val), obj) : nextData;
   }, obj);
+
+const getter = path => obj =>
+  normalizePath(path).reduce((acc, part) => (!acc ? acc : acc[part]), obj);
+
+// inline parts from property-expr
+const normalizePath = path =>
+  split(path).map(part => part.replace(CLEAN_QUOTES_REGEX, '$2'));
+
+const split = path => path.match(SPLIT_REGEX);
+
+const MATCHER_REGEX = /\{(.+?)\}/g;
+const SPLIT_REGEX = /[^.^\]^[]+|(?=\[\]|\.\.)/g;
+const DIGIT_REGEX = /^\d+$/;
+const CLEAN_QUOTES_REGEX = /^\s*(['"]?)(.*?)(\1)\s*$/;

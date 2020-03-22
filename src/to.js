@@ -1,5 +1,4 @@
-import { unflatten } from 'flat';
-import { unmatch } from './utils';
+import { unmatch, unflatten } from './utils';
 
 // parent value -> child object
 const unto = (template, val, options = {}, unflat = true) => {

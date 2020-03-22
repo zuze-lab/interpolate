@@ -1,4 +1,4 @@
-import { getter } from 'property-expr';
+import { getter, normalizePath } from 'property-expr';
 
 const matcher = /\{(.+?)\}/g;
 
@@ -16,7 +16,7 @@ export const interpolate = (template, val, options = {}) => {
 
   // interpolation function
   const replaced = template.replace(match, (_, t) => {
-    const replaceWith = getter(fixNumericKeys(t), true)(val);
+    const replaceWith = getter(t, true)(val);
 
     if (!replaceFull) return replaceWith || '';
 
@@ -29,7 +29,7 @@ export const interpolate = (template, val, options = {}) => {
   return replaceFull ? fullReplacement : replaced;
 };
 
-export const unmatch = (template, val, options = {}) => {
+export const unmatch = (template, val, options) => {
   const match = options.match || matcher;
   const groups = [];
   // convert a template to a regexp such that
@@ -61,16 +61,22 @@ export const unmatch = (template, val, options = {}) => {
   // tried to do this with named capture groups, but characters are restrictive
   // which is why we just use the groups array
   return groups.reduce(
-    (acc, k, idx) => ({
-      ...acc,
-      [k]: matches ? matches[idx + 1] : undefined,
-    }),
+    (acc, k, idx) => (matches ? { ...acc, [k]: matches[idx + 1] } : acc),
     {}
   );
 };
 
-// flat doesn't support square bracket notation, but property-expr does
-// easiest thing to do is to change numeric paths to square bracket
-// notation before using getter from property-expr
-const fixNumericKeys = template =>
-  template.replace(/\.(\d+)/g, (a, b) => `[${b}]`);
+export const unflatten = obj =>
+  Object.entries(obj).reduce(
+    (acc, [path, val]) => (setter(path)(acc, val), acc),
+    {}
+  );
+
+// custom setter based on property-expr, but create the patch if it diesn't exist
+const setter = path => (obj, val) =>
+  normalizePath(path).reduce((data, part, idx, arr) => {
+    const nextData = !data[part]
+      ? (data[part] = (arr[idx + 1] || '').match(/^\d+$/) ? [] : {})
+      : data[part];
+    return idx === arr.length - 1 ? ((data[part] = val), obj) : nextData;
+  }, obj);

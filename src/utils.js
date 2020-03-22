@@ -12,7 +12,7 @@ export const interpolate = (template, val, options) => {
 
   // interpolation function
   const replaced = template.replace(match, (_, t) => {
-    const replaceWith = getter(t, true)(val);
+    const replaceWith = getter(t, val);
 
     if (!replaceFull) return replaceWith || '';
 
@@ -64,10 +64,10 @@ export const unmatch = (template, val, options) => {
 };
 
 export const unflatten = obj =>
-  Object.entries(obj).reduce((acc, p) => setter(p[0])(acc, p[1]), {});
+  Object.entries(obj).reduce((acc, p) => setter(p[0], acc, p[1]), {});
 
 // custom getter/setter based on property-expr, but create the path if it doesn't exist
-const setter = path => (obj, val) =>
+export const setter = (path, obj, val) =>
   normalizePath(path).reduce((data, part, idx, arr) => {
     const nextData = !data[part]
       ? (data[part] = (arr[idx + 1] || '').match(DIGIT_REGEX) ? [] : {})
@@ -75,8 +75,13 @@ const setter = path => (obj, val) =>
     return idx === arr.length - 1 ? ((data[part] = val), obj) : nextData;
   }, obj);
 
-const getter = path => obj =>
-  normalizePath(path).reduce((acc, part) => (!acc ? acc : acc[part]), obj);
+export const getter = (path, obj, def) => {
+  const next = normalizePath(path).reduce(
+    (acc, part) => (!acc ? acc : acc[part]),
+    obj
+  );
+  return next === undefined ? def : next;
+};
 
 // inline parts from property-expr
 const normalizePath = path =>

@@ -4,6 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/zuze-lab/interpolate/badge.svg)](https://coveralls.io/github/zuze-lab/interpolate)
 [![Build Status](https://travis-ci.org/zuze-lab/interpolate.svg)](https://travis-ci.org/zuze-lab/interpolate)
 [![Bundle Phobia](https://badgen.net/bundlephobia/minzip/@zuze/interpolate)](https://bundlephobia.com/result?p=@zuze/interpolate)
+[![install size](https://packagephobia.now.sh/badge?p=@zuze/interpolate)](https://packagephobia.now.sh/result?p=@zuze/interpolate)
 
 Interpolate is used to map a template (`string`, `array`, `object`) and value to an object representation **and back again**.
 

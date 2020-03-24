@@ -12,7 +12,11 @@ const unto = (template, val, options = {}, unflat = true) => {
   if (Array.isArray(template))
     return ret(
       template.reduce(
-        (acc, t, idx) => Object.assign(acc, unto(t, val[idx], options, false)),
+        (acc, t, idx) =>
+          Object.assign(
+            acc,
+            unto(t, val ? val[idx] : undefined, options, false)
+          ),
         {}
       )
     );
@@ -20,7 +24,10 @@ const unto = (template, val, options = {}, unflat = true) => {
   return ret(
     Object.entries(template).reduce(
       (acc, entry) =>
-        Object.assign(acc, unto(entry[1], val[entry[0]], options, false)),
+        Object.assign(
+          acc,
+          unto(entry[1], val ? val[entry[0]] : undefined, options, false)
+        ),
       {}
     )
   );

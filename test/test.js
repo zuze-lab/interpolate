@@ -89,4 +89,18 @@ describe('unterpolate', () => {
     const interpolated = ['first', 'second'];
     expect(() => to(template, interpolated)).toThrow();
   });
+
+  it('should not throw an error if undefined',() => {
+
+    expect(() => to({
+      days: '{days}',
+      minutes: '{minutes}',
+      seconds: '{seconds}'
+    },undefined)).not.toThrow();
+
+    expect(() => to(['joe','{bill}'],undefined)).not.toThrow();    
+    expect(() => to('{fred}',undefined)).not.toThrow();    
+  })
+
+  
 });

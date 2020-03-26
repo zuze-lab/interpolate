@@ -64,16 +64,28 @@ export const unmatch = (template, val, options) => {
 };
 
 export const unflatten = obj =>
-  Object.entries(obj).reduce((acc, p) => setter(p[0], acc, p[1]), {});
+  Object.entries(obj).reduce(
+    (acc, p) => setter(p[0], acc, p[1], { immutable: true }),
+    {}
+  );
+
+export const clone = obj => (Array.isArray(obj) ? [...obj] : { ...obj });
 
 // custom getter/setter based on property-expr, but create the path if it doesn't exist
-export const setter = (path, obj, val) =>
-  normalizePath(path).reduce((data, part, idx, arr) => {
+export const setter = (path, obj, val, { immutable = false } = {}) => {
+  const _clone = w => (immutable ? clone(w) : w);
+  const start = _clone(obj);
+
+  return normalizePath(path).reduce((data, part, idx, arr) => {
     const nextData = !data[part]
       ? (data[part] = (arr[idx + 1] || '').match(DIGIT_REGEX) ? [] : {})
       : data[part];
-    return idx === arr.length - 1 ? ((data[part] = val), obj) : nextData;
-  }, obj);
+
+    return idx === arr.length - 1
+      ? ((data[part] = val), start)
+      : (data[part] = _clone(nextData));
+  }, start);
+};
 
 export const getter = (path, obj, def) => {
   const next = normalizePath(path).reduce(

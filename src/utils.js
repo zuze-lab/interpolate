@@ -64,10 +64,7 @@ export const unmatch = (template, val, options) => {
 };
 
 export const unflatten = obj =>
-  Object.entries(obj).reduce(
-    (acc, p) => setter(p[0], acc, p[1], { immutable: true }),
-    {}
-  );
+  Object.entries(obj).reduce((acc, p) => setter(p[0], acc, p[1]), {});
 
 export const clone = obj => (Array.isArray(obj) ? [...obj] : { ...obj });
 

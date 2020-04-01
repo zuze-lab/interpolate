@@ -6,7 +6,7 @@
 [![Bundle Phobia](https://badgen.net/bundlephobia/minzip/@zuze/interpolate)](https://bundlephobia.com/result?p=@zuze/interpolate)
 [![install size](https://packagephobia.now.sh/badge?p=@zuze/interpolate)](https://packagephobia.now.sh/result?p=@zuze/interpolate)
 
-Interpolate is used to map a template (`string`, `array`, `object`) and value to an object representation **and back again**.
+Interpolate is used to perform simple interpolations and (as best possible) their reverse operations.
 
 ```js
 import { interpolate, unterpolate } from '@zuze/interpolate';
@@ -242,8 +242,22 @@ The `to` method is what creates the uninterpolated object from the template and 
 
 The `from` method is what creates the interpolated value from the object
 
-##
+## Additional Methods
 
-[npm-image]: http://img.shields.io/npm/v/frisbee.svg?style=flat
+This package exposes some additional methods that are useful:
 
-[npm-url]: https://npmjs.org/package/@zuze/interpolate
+### `get(object: object, path: string, default?: any): any`
+
+Equivalent to [lodash get](https://lodash.com/docs/4.17.15#get).
+
+### `set(object: object, path: string, value: any, immutable?: boolean = false): any`
+
+Equivalent to [lodash set](https://lodash.com/docs/4.17.15#set) with optional parameter to immutably set the property.
+
+### `parts(path: string): string[]`
+
+Parses a path like first[1].second.third.9 into parts: `['first', '1', 'second', 'third', '9']`.
+
+### `unflatten(object: object): object`
+
+Like `unflatten` method in [flat](https://www.npmjs.com/package/flat).

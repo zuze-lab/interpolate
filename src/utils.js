@@ -12,7 +12,7 @@ export const interpolate = (template, val, options) => {
 
   // interpolation function
   const replaced = template.replace(match, (_, t) => {
-    const replaceWith = getter(t, val);
+    const replaceWith = get(val, t);
 
     if (!replaceFull) return replaceWith || '';
 
@@ -29,10 +29,11 @@ export const unmatch = (template, val, options) => {
   const match = options.match || MATCHER_REGEX;
   const groups = [];
   // convert a template to a regexp such that
-  // {year}-{month}-{day} becomes (.*)-(.*)-(.*)
+  // {year}-{month}-{day} for example, becomes (.*)-(.*)-(.*)
   const regexp = new RegExp(
     template.replace(match, (_, m) => {
-      // while we're at it, put the name of what is being interpolated - e.g. year in {year} or month in {month}
+      // while we're at it, put the name of what is being interpolated
+      // e.g. year in {year} or month in {month}
       // in the array "groups"
       return groups.push(m), `(.*)`;
     })
@@ -64,41 +65,39 @@ export const unmatch = (template, val, options) => {
 };
 
 export const unflatten = obj =>
-  Object.entries(obj).reduce((acc, p) => setter(p[0], acc, p[1]), {});
+  Object.entries(obj).reduce((acc, p) => set(acc, p[0], p[1]), {});
 
-export const clone = obj => (Array.isArray(obj) ? [...obj] : { ...obj });
+export const clone = obj =>
+  Array.isArray(obj) ? obj.slice(0) : Object.assign({}, obj);
 
-// custom getter/setter based on property-expr, but create the path if it doesn't exist
-export const setter = (path, obj, val, { immutable = false } = {}) => {
+// custom get/set based on property-expr/lodash - 0 dependency
+export const set = (obj, path, val, immutable = false) => {
   const _clone = w => (immutable ? clone(w) : w);
   const start = _clone(obj);
 
-  return normalizePath(path).reduce((data, part, idx, arr) => {
+  return parts(path).reduce((data, part, idx, arr) => {
     const nextData = !data[part]
-      ? (data[part] = (arr[idx + 1] || '').match(DIGIT_REGEX) ? [] : {})
+      ? // if the next path doesn't exist, create a new object or array
+        (data[part] = (arr[idx + 1] || '').match(/^\d+$/) ? [] : {})
       : data[part];
 
+    // if this is the last part of the path, return start
+    // otherwise set data[part] to whatever we created above
     return idx === arr.length - 1
       ? ((data[part] = val), start)
       : (data[part] = _clone(nextData));
   }, start);
 };
 
-export const getter = (path, obj, def) => {
-  const next = normalizePath(path).reduce(
-    (acc, part) => (!acc ? acc : acc[part]),
-    obj
-  );
+export const get = (obj, path, def) => {
+  const next = parts(path).reduce((acc, part) => (!acc ? acc : acc[part]), obj);
   return next === undefined ? def : next;
 };
 
 // inline parts from property-expr
-const normalizePath = path =>
-  split(path).map(part => part.replace(CLEAN_QUOTES_REGEX, '$2'));
-
-const split = path => path.match(SPLIT_REGEX);
+export const parts = path =>
+  path.match(SPLIT_REGEX).map(part => part.replace(CLEAN_QUOTES_REGEX, '$2'));
 
 const MATCHER_REGEX = /\{(.+?)\}/g;
 const SPLIT_REGEX = /[^.^\]^[]+|(?=\[\]|\.\.)/g;
-const DIGIT_REGEX = /^\d+$/;
 const CLEAN_QUOTES_REGEX = /^\s*(['"]?)(.*?)(\1)\s*$/;

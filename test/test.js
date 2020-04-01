@@ -1,4 +1,4 @@
-import { to, from, setter } from '../src';
+import { to, from, set } from '../src';
 
 describe('unterpolate', () => {
   it('should in/unterpolate using a string', () => {
@@ -20,8 +20,15 @@ describe('unterpolate', () => {
       '{second}',
       'third-{fourth.fifth}',
       '{first.first}',
+      'no interpolation',
     ];
-    const interpolated = ['joe', 'bill', 'third-jim', ['tom', 'dick', 'harry']];
+    const interpolated = [
+      'joe',
+      'bill',
+      'third-jim',
+      ['tom', 'dick', 'harry'],
+      'no interpolation',
+    ];
     const expected = {
       first: {
         first: ['tom', 'dick', 'harry'],
@@ -80,25 +87,8 @@ describe('unterpolate', () => {
       second: 'bill',
     };
 
-    const field = {
-      interpolate: {},
-      composite: [
-        {
-          path: 'days',
-        },
-        {
-          path: 'minutes',
-        },
-        {
-          path: 'seconds',
-        },
-      ],
-    };
-
-    // console.log(to(template, interpolated);
-    // console.log(from(template, expected));
-    // expect(to(template, interpolated)).toMatchObject(expected);
-    // expect(from(template, expected)).toMatchObject(interpolated);
+    expect(to(template, interpolated)).toMatchObject(expected);
+    expect(from(template, expected)).toMatchObject(interpolated);
   });
 
   it('should throw an error if multiple interpolations are at a non-string value path', () => {
@@ -124,7 +114,7 @@ describe('unterpolate', () => {
   });
 });
 
-describe('setter', () => {
+describe('set', () => {
   it('should mutate', () => {
     const subject = {
       field: {
@@ -139,7 +129,7 @@ describe('setter', () => {
       },
     };
 
-    const mutated = setter('field.first.0.j', subject, 'jim');
+    const mutated = set(subject, 'field.first.0.j', 'jim');
     expect(mutated).toBe(subject);
     expect(mutated.field.first[0].j).toBe('jim');
   });
@@ -158,9 +148,7 @@ describe('setter', () => {
       },
     };
 
-    const immutable = setter('field.first.0.j', subject, 'jim', {
-      immutable: true,
-    });
+    const immutable = set(subject, 'field.first.0.j', 'jim', true);
 
     expect(immutable).not.toBe(subject);
     expect(immutable.field.first[0].j).toBe('jim');

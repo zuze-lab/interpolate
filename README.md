@@ -232,11 +232,117 @@ to(template,'2019-10-01',{match:/\$(.+?)\$/g})
 
 ```
 
+## Dynamic Array Mapping
+
+A difficult problem is dynamically uninterpolating complex arrays to the appropriate object structure.
+
+```js
+const template = {
+    options: [
+        { keyToMapBy: 'a', value: '{fieldA}' },
+        { keyToMapBy: 'b', value: '{fieldB}' },
+        { keyToMapBy: 'c', value: '{fieldC}' },
+    ],
+}
+
+const interpolated = {
+    options: [
+        { keyToMapBy: 'a', value: 'some val a' },
+        { keyToMapBy: 'c', value: 'some val c' },
+        { keyToMapBy: 'b', value: 'some val b' },
+    ],  
+}
+
+
+to(template,interpolated);
+
+/*
+by default this would happen:
+{
+    fieldA: 'some val a',
+    fieldB: 'some val c', 
+    fieldC: 'some val b'    
+}
+*/
+```
+
+This can be solved by supplying the `mapper` option to `to`:
+
+```js
+const template = {
+    options: [
+        { keyToMapBy: 'a', value: '{fieldA}' },
+        { keyToMapBy: 'b', value: '{fieldB}' },
+        { keyToMapBy: 'c', value: '{fieldC}' },
+    ],
+}
+
+const interpolated = {
+    options: [
+        { keyToMapBy: 'a', value: 'some val a' },
+        { keyToMapBy: 'c', value: 'some val c' },
+        { keyToMapBy: 'b', value: 'some val b' },
+    ],  
+}
+
+
+to(template,interpolated, { 
+    mapper: { 
+        // [`key of field that we are mapping`]: 'keyToBeCompared'
+        options: 'keyToMapBy' 
+    }
+});
+
+/*
+by default this would happen:
+{
+    fieldA: 'some val a',
+    fieldB: 'some val b', 
+    fieldC: 'some val c'    
+}
+*/
+```
+
+You can also pass a plain function that accepts the array item in the template, the array of the value and the index:
+
+```js
+const template = {
+    options: [
+        { keyToMapBy: 'a', value: '{fieldA}' },
+        { keyToMapBy: 'b', value: '{fieldB}' },
+        { keyToMapBy: 'c', value: '{fieldC}' },
+    ],
+}
+
+const interpolated = {
+    options: [
+        { keyToMapBy: 'a', value: 'some val a' },
+        { keyToMapBy: 'c', value: 'some val c' },
+        { keyToMapBy: 'b', value: 'some val b' },
+    ],  
+}
+
+
+to(template,interpolated, { 
+    mapper: { 
+        // the default array uninterpolater looks exactly like this:
+        options: (template,arr = [],idx) => arr[idx]
+    }
+});
+```
+
+
 ## API
 
-### `to(template: string | function | object | array, value: any, options: {match: RegExp}): Uninterpolated Object`
+### `to(template: string | function | object | array, value: any, options: {match: RegExp, mapper: Mapper}): Uninterpolated Object`
 
 The `to` method is what creates the uninterpolated object from the template and value.
+
+The `mapper` option is used to dynamically uninterpolate arrays:
+```js
+type MappingFunction = (template: any, arr: T[], idx: number) => T | undefined;
+type Mapper = { [key: string]: string | MappingFunction } | MappingFunction;
+```
 
 ### `from(template: string | function | object | array, value: object, options: {match: RegExp}): Interpolated Value`
 
@@ -245,6 +351,12 @@ The `from` method is what creates the interpolated value from the object
 ## Additional Methods
 
 This package exposes some additional methods that are useful:
+
+### `keyMapper(key: string, comparator?: (a,b) => a === b)
+
+When a `string` is given as a [mapper](#dynamic-array-mapping), a `keyMapper` is used to compare array items. A custom comparator option can be given to it as an argument.
+
+Comparing array items at object keys is highly useful, but ff this won't suffice for your needs, you'll probably want to just define your own `MappingFunction`.
 
 ### `get(object: object, path: string, default?: any): any`
 

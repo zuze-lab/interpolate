@@ -44,6 +44,34 @@ describe('unterpolate', () => {
     expect(from(template, expected)).toMatchObject(interpolated);
   });
 
+  it('should in/unterpolate using an array using a mapping function', () => {
+    const template = {
+      options: [
+        { keyToMapBy: 'a', value: '{fieldA}' },
+        { keyToMapBy: 'b', value: '{fieldB}' },
+        { keyToMapBy: 'c', value: '{fieldC}' },
+      ],
+    };
+
+    const interpolated = {
+      options: [
+        { keyToMapBy: 'a', value: 'some val a' },
+        { keyToMapBy: 'c', value: 'some val c' },
+        { keyToMapBy: 'b', value: 'some val b' },
+      ],
+    };
+
+    const expected = {
+      fieldB: 'some val b',
+      fieldC: 'some val c',
+      fieldA: 'some val a',
+    };
+
+    expect(to(template, interpolated).fieldB).toBe('some val c'); // no mapping function
+    const mapper = { options: 'keyToMapBy' };
+    expect(to(template, interpolated, { mapper })).toStrictEqual(expected);
+  });
+
   it('should in/unterpolate using a function', () => {
     const template = {
       first: (val, opts) =>

@@ -101,3 +101,13 @@ export const parts = path =>
 const MATCHER_REGEX = /\{(.+?)\}/g;
 const SPLIT_REGEX = /[^.^\]^[]+|(?=\[\]|\.\.)/g;
 const CLEAN_QUOTES_REGEX = /^\s*(['"]?)(.*?)(\1)\s*$/;
+
+// utility to dynamically destructure arrays
+export const arrayMapper = (arr, mapper = defaultMapper, idx, t) =>
+  (typeof mapper === 'string' ? keyMapper(mapper) : mapper)(t, arr, idx);
+
+export const defaultMapper = (_, arr = [], idx) => arr[idx];
+export const keyMapper = (key, comparator = (a, b) => a === b) => (
+  template,
+  arr = []
+) => arr.find(v => comparator(get(v, key), get(template, key)));

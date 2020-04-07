@@ -3,7 +3,7 @@ import { interpolate } from './utils';
 //  child object -> parent value
 const unfrom = (template, val, options = {}) => {
   if (typeof template === 'function')
-    return template(val, Object.assign(options, { how: 'from' }));
+    return template(val, Object.assign({ how: 'from' }, options));
 
   if (typeof template === 'string') return interpolate(template, val, options);
 

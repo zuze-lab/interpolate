@@ -5,7 +5,7 @@ const unto = (template, val, options = {}, unflat = true) => {
   const ret = val => (val && unflat ? unflatten(val) : val);
 
   if (typeof template === 'function')
-    return ret(template(val, Object.assign(options, { how: 'to' })));
+    return ret(template(val, Object.assign({}, options, { how: 'to' })));
 
   if (typeof template === 'string') return ret(unmatch(template, val, options));
 
@@ -15,9 +15,13 @@ const unto = (template, val, options = {}, unflat = true) => {
         (acc, t, idx) =>
           Object.assign(
             acc,
-            // val[idx] needs to be configurable somehow here
-            // so we can get a different value in the array if necessary
-            unto(t, arrayMapper(val, options.mapper, idx, t), options, false)
+            unto(
+              t,
+              // use the mapper option to dynamically uninterpolate the array
+              arrayMapper(val, options.mapper, idx, t),
+              options,
+              false
+            )
           ),
         {}
       )

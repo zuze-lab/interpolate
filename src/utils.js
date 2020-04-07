@@ -50,7 +50,7 @@ export const unmatch = (template, val, options) => {
         `Cannot unterpolate a string template against a non-string value`
       );
     const o = {};
-    return (o[groups[0]] = val), o;
+    return groups.length && (o[groups[0]] = val), o;
   }
 
   const matches = val.match(regexp);

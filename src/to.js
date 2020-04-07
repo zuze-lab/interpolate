@@ -1,4 +1,4 @@
-import { unmatch, unflatten } from './utils';
+import { unmatch, unflatten, arrayMapper } from './utils';
 
 // parent value -> child object
 const unto = (template, val, options = {}, unflat = true) => {
@@ -15,7 +15,9 @@ const unto = (template, val, options = {}, unflat = true) => {
         (acc, t, idx) =>
           Object.assign(
             acc,
-            unto(t, val ? val[idx] : undefined, options, false)
+            // val[idx] needs to be configurable somehow here
+            // so we can get a different value in the array if necessary
+            unto(t, arrayMapper(val, options.mapper, idx, t), options, false)
           ),
         {}
       )
@@ -26,7 +28,14 @@ const unto = (template, val, options = {}, unflat = true) => {
       (acc, entry) =>
         Object.assign(
           acc,
-          unto(entry[1], val ? val[entry[0]] : undefined, options, false)
+          unto(
+            entry[1],
+            val ? val[entry[0]] : undefined,
+            Object.assign({}, options, {
+              mapper: (options.mapper || {})[entry[0]],
+            }),
+            false
+          )
         ),
       {}
     )

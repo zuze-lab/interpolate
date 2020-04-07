@@ -1,6 +1,6 @@
 import to from './to';
 import { default as from } from './from';
-export { get, set, parts, unflatten } from './utils';
+export { get, set, parts, unflatten, keyMapper } from './utils';
 const interpolate = from;
 const unterpolate = to;
 

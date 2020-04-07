@@ -294,7 +294,7 @@ to(template,interpolated, {
 });
 
 /*
-by default this would happen:
+destructured correctly:
 {
     fieldA: 'some val a',
     fieldB: 'some val b', 

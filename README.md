@@ -352,7 +352,7 @@ The `from` method is what creates the interpolated value from the object
 
 This package exposes some additional methods that are useful:
 
-### `keyMapper(key: string, comparator?: (a,b) => a === b)
+### `keyMapper(key: string, comparator?: (a,b) => a === b)`
 
 When a `string` is given as a [mapper](#dynamic-array-mapping), a `keyMapper` is used to compare array items. A custom comparator option can be given to it as an argument.
 

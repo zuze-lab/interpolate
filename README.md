@@ -44,6 +44,17 @@ or yarn:
 yarn add @zuze/interpolate
 ```
 
+You can also use it directly in the browser by doing:
+
+```html
+<script src="https://unpkg.com/@zuze/interpolate"></script>
+<script>
+ // creates a global variable ZInterpolate
+ const { to, from, get, set, parts } = ZInterpolate;
+</script>
+```
+
+
 ## Usage
 
 Interpolations are ubiquitous, from the first templating engines, to internationalization, etc.

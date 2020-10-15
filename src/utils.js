@@ -6,8 +6,7 @@ export const interpolate = (template, val, options) => {
   const replaced = template.replace(match, (e, t) => {
     shouldReplaceFull = e === template;
     found = get(typeof val === 'function' ? val(t) : val, t);
-    if (!shouldReplaceFull) return found || '';
-    return '';
+    return shouldReplaceFull ? '' : found;
   });
 
   return shouldReplaceFull ? found : replaced;

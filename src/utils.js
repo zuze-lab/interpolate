@@ -1,28 +1,16 @@
 export const interpolate = (template, val, options) => {
-  let fullReplacement;
+  let shouldReplaceFull, found;
   const match = options.match || MATCHER_REGEX;
-  const matched = template.match(match);
-
-  // template doesn't contain any interpolation points
-  if (!matched) return template;
-
-  // if the template is equal to a single interpolation point - e.g. '{full.name}'
-  // then set a flag to return the full entity retrieved from the getter (full entity could be an array, object, or something else)
-  const replaceFull = matched.length === 1 && matched[0] === template;
 
   // interpolation function
-  const replaced = template.replace(match, (_, t) => {
-    const replaceWith = get(typeof val === 'function' ? val(t) : val, t);
-
-    if (!replaceFull) return replaceWith || '';
-
-    // flag is set so we don't care about replacements being
-    // applied to the template - we only need the first replacement
-    fullReplacement = replaceWith;
+  const replaced = template.replace(match, (e, t) => {
+    shouldReplaceFull = e === template;
+    found = get(typeof val === 'function' ? val(t) : val, t);
+    if (!shouldReplaceFull) return found || '';
     return '';
   });
 
-  return replaceFull ? fullReplacement : replaced;
+  return shouldReplaceFull ? found : replaced;
 };
 
 export const unmatch = (template, val, options) => {

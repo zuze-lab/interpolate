@@ -1,4 +1,4 @@
-import { to, from, set } from '../src';
+import { to, from, set, interpolate } from '../src';
 
 describe('unterpolate', () => {
   it('should in/unterpolate using a string', () => {
@@ -12,6 +12,25 @@ describe('unterpolate', () => {
 
     expect(to(template, interpolated)).toMatchObject(expected);
     expect(from(template, expected)).toBe(interpolated);
+  });
+
+  it('should allow interpolation using a function', () => {
+    const template = '{year}-{month}-{day}';
+    const first = {
+      year: '2019',
+      month: '09',
+      day: '01',
+    };
+
+    const second = {
+      year: '2020',
+      month: '10',
+      day: '15',
+    };
+
+    expect(
+      interpolate(template, key => (key === 'year' ? second : first))
+    ).toBe('2020-09-01');
   });
 
   it('should in/unterpolate using an array', () => {

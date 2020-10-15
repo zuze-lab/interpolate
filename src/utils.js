@@ -12,7 +12,7 @@ export const interpolate = (template, val, options) => {
 
   // interpolation function
   const replaced = template.replace(match, (_, t) => {
-    const replaceWith = get(val, t);
+    const replaceWith = get(typeof val === 'function' ? val(t) : val, t);
 
     if (!replaceFull) return replaceWith || '';
 

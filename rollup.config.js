@@ -61,7 +61,7 @@ export default [
         file: 'build/bundle.min.js',
         sourcemap: true,
         format: 'iife',
-        name: 'interpolate',
+        name: 'ZInterpolate',
         plugins: [terser()],
       },
     ],

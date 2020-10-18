@@ -1,7 +1,7 @@
 import { unmatch, unflatten, arrayMapper } from './utils';
 
 // parent value -> child object
-const unto = (template, val, options = {}, unflat = true) => {
+const unterpolate = (template, val, options = {}, unflat = true) => {
   const ret = val => (val && unflat ? unflatten(val) : val);
 
   if (typeof template === 'function')
@@ -15,7 +15,7 @@ const unto = (template, val, options = {}, unflat = true) => {
         (acc, t, idx) =>
           Object.assign(
             acc,
-            unto(
+            unterpolate(
               t,
               // use the mapper option to dynamically uninterpolate the array
               arrayMapper(val, options.mapper, idx, t),
@@ -32,7 +32,7 @@ const unto = (template, val, options = {}, unflat = true) => {
       (acc, entry) =>
         Object.assign(
           acc,
-          unto(
+          unterpolate(
             entry[1],
             val ? val[entry[0]] : undefined,
             Object.assign({}, options, {
@@ -46,4 +46,4 @@ const unto = (template, val, options = {}, unflat = true) => {
   );
 };
 
-export default unto;
+export default unterpolate;

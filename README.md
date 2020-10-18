@@ -14,7 +14,7 @@ import { interpolate, unterpolate } from '@zuze/interpolate';
 const template = '{year}-{month}-{day}';
 const interpolated = '2019-10-01';
 
-unterpolate(template,interpolated) 
+unterpolate(template, interpolated) 
 /*
 {
     year:'2019',
@@ -23,10 +23,10 @@ unterpolate(template,interpolated)
 }
 */
 
-interpolate(template,{
-    year:'2019',
-    month:'10',
-    day:'01'
+interpolate(template, {
+    year: '2019',
+    month: '10',
+    day: '01'
 });
 
 // '2019-10-01'
@@ -50,7 +50,7 @@ You can also use it directly in the browser by doing:
 <script src="https://unpkg.com/@zuze/interpolate"></script>
 <script>
  // creates a global variable ZInterpolate
- const { to, from, get, set, parts } = ZInterpolate;
+ const { unterpolate, interpolate, get, set, parts } = ZInterpolate;
 </script>
 ```
 
@@ -61,23 +61,18 @@ Interpolations are ubiquitous, from the first templating engines, to internation
 
 Interpolations don't have to just work for creating strings, however. With the right tools, it can be used to create more complex data transformations, which is the purpose of `interpolate`.
 
-### Aliases
+### Deeply Nested Objects
 
-- **`to === unterpolate`** - map a template and an interpolated value to an object
-- **`from === interpolate`** - map an object using a template to an interpolated value
-
-### simple string mapping
-
-In addition to simple string mapping (see the first `to`/`from` example) `interpolate` supports nested transformations care.
+In addition to simple string mapping (see the first `unterpolate`/`from` example) `interpolate` supports transformations to/from deeply nested objects:
 
 ```js
-import { to, from } from '@zuze/interpolate';
+import { unterpolate, interpolate } from '@zuze/interpolate';
 
 
 const template = '{first.second}-{first.third}-something-{first.fifth[0]}';
 const interpolated = '2019-10-something-01';
 
-to(template,interpolated) 
+interpolate(template,interpolated) 
 
 /*
 {
@@ -89,7 +84,7 @@ to(template,interpolated)
 }
 */
 
-from(template,{
+unterpolate(template,{
     first: {
         second:'2019',
         third:'10',
@@ -102,6 +97,29 @@ from(template,{
 
 ```
 
+**NOTE**: `interpolate` also accepts a function:
+
+```js
+
+import { unterpolate, interpolate } from '@zuze/interpolate';
+
+const template = '{year}-{month}-{day}';
+const first = {
+    year: '2019',
+    month: '09',
+    day: '01',
+};
+
+const second = {
+    year: '2020',
+    month: '10',
+    day: '15',
+};
+
+const replacer = replaceWhat => replaceWhat === 'year' ? second[replaceWhat] : first[replaceWhat];
+interpolate(template,replacer); //2020-09-01
+```
+
 ### complex object/array mapping
 
 We don't only `interpolate` an object's values to a string, we can interpolate them into a complex structure:
@@ -112,7 +130,7 @@ We don't only `interpolate` an object's values to a string, we can interpolate t
 const template = ['{first}','{second.first}','{third}-something'];
 const interpolated = [['an','array'],20,'somestring-something'];
 
-to(template,interpolated);
+unterpolate(template,interpolated);
 /*
 {
     first: ['an','array'],
@@ -125,15 +143,15 @@ to(template,interpolated);
 
 // and magically...
 
-from(template,{
-    first:{
-        first:'a',
-        second:'b',
+interpolate(template, {
+    first: {
+        first: 'a',
+        second: 'b',
     },
     second: {
-        first:['an','array']
+        first: [ 'an', 'array' ]
     },
-    third:'must be a string'
+    third: 'must be a string'
 });
 
 /*
@@ -153,11 +171,11 @@ from(template,{
 
 ```js
 const template = {
-    first:'{someKey}',
+    first: '{someKey}',
     second: {
         third: '{first.first.0}'
     },
-    fourth:[
+    fourth: [
         'key1', // no { }
         '{key1}',
         '{first.second}'
@@ -165,7 +183,7 @@ const template = {
 }
 
 const interpolated = {
-    first:'something',
+    first: 'something',
     second: {
         third: ['joe']
     },
@@ -176,7 +194,7 @@ const interpolated = {
     ]
 }
 
-to(template,interpolated);
+unterpolate(template,interpolated);
 /*
 {
     someKey:'something',
@@ -197,9 +215,9 @@ Truth be told, `unterpolate` was created to be able to do transformations throug
 
 For full flexibility, `interpolate` does support using a function to perform `interpolations` and their reverse operations.
 
-The function receives the the `value` being in/unterpolated and the options given to the `to/from` function with a key of `how` whose value is either `to` or `from`.
+The function receives the the `value` being in/unterpolated and the options given to the `unterpolate/interpolate` function with a key of `how` whose value is either `unterpolate` or `interpolate`.
 
-Note: If `to` the return value from the function **must be false-y or an object** - anything else will throw an error.
+Note: If `unterpolate` the return value from the function **must be false-y or an object** - anything else will throw an error.
 
 ```js
 import { to, from } from '@zuze/interpolate';
@@ -226,7 +244,7 @@ The default `RegExp` that determines what is an interpolation is `/\{(.+?)\}/g` 
 
 An object is created out of the matched strings which is then [unflattened](https://www.npmjs.com/package/flat#unflattenoriginal-options) to create non-trivial structures.
 
-You can pass a different `match` regexp, if it suits your purposes, to `to` and `from` like so:
+You can pass a different `match` regexp, if it suits your purposes, to `unterpolate` and `interpolate` like so:
 
 ```js
 
@@ -277,7 +295,7 @@ by default this would happen:
 */
 ```
 
-This can be solved by supplying the `mapper` option to `to`:
+This can be solved by supplying the `mapper` option to `unterpolate`:
 
 ```js
 const template = {
@@ -345,9 +363,9 @@ to(template,interpolated, {
 
 ## API
 
-### `to(template: string | function | object | array, value: any, options: {match: RegExp, mapper: Mapper}): Uninterpolated Object`
+### `unterpolate(template: string | function | object | array, value: any, options: {match: RegExp, mapper: Mapper}): Uninterpolated Object`
 
-The `to` method is what creates the uninterpolated object from the template and value.
+The `unterpolate` method is what creates the uninterpolated object from the template and value.
 
 The `mapper` option is used to dynamically uninterpolate arrays:
 ```js
@@ -355,9 +373,9 @@ type MappingFunction = (template: any, arr: T[], idx: number) => T | undefined;
 type Mapper = { [key: string]: string | MappingFunction } | MappingFunction;
 ```
 
-### `from(template: string | function | object | array, value: object, options: {match: RegExp}): Interpolated Value`
+### `interpolate(template: string | function | object | array, value: object | (key: string) => any, options: {match: RegExp}): Interpolated Value`
 
-The `from` method is what creates the interpolated value from the object
+The `interpolate` method is what creates the interpolated value from an object (or replacer function that can provide the values for interpolate)
 
 ## Additional Methods
 

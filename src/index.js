@@ -1,7 +1,3 @@
-import to from './to';
-import { default as from } from './from';
+export { default as unterpolate } from './unterpolate';
+export { default as interpolate } from './interpolate';
 export { get, set, parts, unflatten, keyMapper } from './utils';
-const interpolate = from;
-const unterpolate = to;
-
-export { to, from, interpolate, unterpolate };

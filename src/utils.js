@@ -1,11 +1,11 @@
-export const interpolate = (template, val, options) => {
+export const replace = (template, val, options) => {
   let shouldReplaceFull, found;
   const match = options.match || MATCHER_REGEX;
 
   // interpolation function
-  const replaced = template.replace(match, (e, t) => {
-    shouldReplaceFull = e === template;
-    found = get(typeof val === 'function' ? val(t) : val, t);
+  const replaced = template.replace(match, (full, matched) => {
+    shouldReplaceFull = full === template;
+    found = typeof val === 'function' ? val(matched, full) : get(val, matched);
     return shouldReplaceFull ? '' : found;
   });
 

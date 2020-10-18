@@ -1,4 +1,4 @@
-import { to, from, set, interpolate } from '../src';
+import { unterpolate, interpolate, set } from '../src';
 
 describe('unterpolate', () => {
   it('should in/unterpolate using a string', () => {
@@ -10,8 +10,8 @@ describe('unterpolate', () => {
       day: '01',
     };
 
-    expect(to(template, interpolated)).toMatchObject(expected);
-    expect(from(template, expected)).toBe(interpolated);
+    expect(unterpolate(template, interpolated)).toMatchObject(expected);
+    expect(interpolate(template, expected)).toBe(interpolated);
   });
 
   it('should allow interpolation using a function', () => {
@@ -29,7 +29,7 @@ describe('unterpolate', () => {
     };
 
     expect(
-      interpolate(template, key => (key === 'year' ? second : first))
+      interpolate(template, key => (key === 'year' ? second[key] : first[key]))
     ).toBe('2020-09-01');
   });
 
@@ -59,8 +59,8 @@ describe('unterpolate', () => {
       second: 'bill',
     };
 
-    expect(to(template, interpolated)).toMatchObject(expected);
-    expect(from(template, expected)).toMatchObject(interpolated);
+    expect(unterpolate(template, interpolated)).toMatchObject(expected);
+    expect(interpolate(template, expected)).toMatchObject(interpolated);
   });
 
   it('should in/unterpolate using an array using a mapping function', () => {
@@ -86,9 +86,11 @@ describe('unterpolate', () => {
       fieldA: 'some val a',
     };
 
-    expect(to(template, interpolated).fieldB).toBe('some val c'); // no mapping function
+    expect(unterpolate(template, interpolated).fieldB).toBe('some val c'); // no mapping function
     const mapper = { options: 'keyToMapBy' };
-    expect(to(template, interpolated, { mapper })).toStrictEqual(expected);
+    expect(unterpolate(template, interpolated, { mapper })).toStrictEqual(
+      expected
+    );
   });
 
   it('should in/unterpolate using a function', () => {
@@ -105,8 +107,8 @@ describe('unterpolate', () => {
       prop: 10,
     };
 
-    expect(to(template, value)).toMatchObject(expected);
-    expect(from(template, expected)).toMatchObject(value);
+    expect(unterpolate(template, value)).toMatchObject(expected);
+    expect(interpolate(template, expected)).toMatchObject(value);
   });
 
   it('should in/unterpolate using an object', () => {
@@ -134,19 +136,19 @@ describe('unterpolate', () => {
       second: 'bill',
     };
 
-    expect(to(template, interpolated)).toMatchObject(expected);
-    expect(from(template, expected)).toMatchObject(interpolated);
+    expect(unterpolate(template, interpolated)).toMatchObject(expected);
+    expect(interpolate(template, expected)).toMatchObject(interpolated);
   });
 
   it('should throw an error if multiple interpolations are at a non-string value path', () => {
     const template = '{joe}-{bill}';
     const interpolated = ['first', 'second'];
-    expect(() => to(template, interpolated)).toThrow();
+    expect(() => unterpolate(template, interpolated)).toThrow();
   });
 
   it('should not throw an error if undefined', () => {
     expect(() =>
-      to(
+      unterpolate(
         {
           days: '{days}',
           minutes: '{minutes}',
@@ -156,8 +158,8 @@ describe('unterpolate', () => {
       )
     ).not.toThrow();
 
-    expect(() => to(['joe', '{bill}'], undefined)).not.toThrow();
-    expect(() => to('{fred}', undefined)).not.toThrow();
+    expect(() => unterpolate(['joe', '{bill}'], undefined)).not.toThrow();
+    expect(() => unterpolate('{fred}', undefined)).not.toThrow();
   });
 });
 

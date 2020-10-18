@@ -3,7 +3,7 @@ import { replace } from './utils';
 //  child object -> parent value
 const interpolate = (template, val, options = {}) => {
   if (typeof template === 'function')
-    return template(val, Object.assign({ how: 'from' }, options));
+    return template(val, Object.assign({ how: 'interpolate' }, options));
 
   if (typeof template === 'string') return replace(template, val, options);
 

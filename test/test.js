@@ -96,7 +96,7 @@ describe('unterpolate', () => {
   it('should in/unterpolate using a function', () => {
     const template = {
       first: (val, opts) =>
-        opts.how === 'to' ? { prop: val / 2 } : val['prop'] * 2,
+        opts.how === 'unterpolate' ? { prop: val / 2 } : val['prop'] * 2,
     };
 
     const value = {

@@ -63,7 +63,7 @@ Interpolations don't have to just work for creating strings, however. With the r
 
 ### Deeply Nested Objects
 
-In addition to simple string mapping (see the first `unterpolate`/`from` example) `interpolate` supports transformations to/from deeply nested objects:
+In addition to simple string mapping (see the first `unterpolate` example) `interpolate` supports transformations to/from deeply nested objects:
 
 ```js
 import { unterpolate, interpolate } from '@zuze/interpolate';
@@ -220,10 +220,10 @@ The function receives the the `value` being in/unterpolated and the options give
 Note: If `unterpolate` the return value from the function **must be false-y or an object** - anything else will throw an error.
 
 ```js
-import { to, from } from '@zuze/interpolate';
+import { interpolate, unterpolate } from '@zuze/interpolate';
 
 const template = {
-    first: (val, opts) => opts.how === 'to' ? { prop: val / 2 } : val['prop'] * 2
+    first: (val, opts) => opts.how === 'interpolate' ? { prop: val / 2 } : val['prop'] * 2
 };
 
 const value = {
@@ -234,8 +234,8 @@ const expected = {
     prop: 10,
 };
 
-to(template,value); // { prop: 10 }
-from(template,expected); // { first: 20 }
+unterpolate(template,value); // { prop: 10 }
+interpolate(template,expected); // { first: 20 }
 ```
 
 ### `match` regexp

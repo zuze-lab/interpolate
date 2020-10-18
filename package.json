@@ -1,7 +1,7 @@
 {
   "name": "@zuze/interpolate",
   "version": "7.0.0",
-  "description": "A tiny library for performing simple (and complex) interpolations.",
+  "description": "A tiny library for performing simple (and complex) interpolations and their reverse operations",
   "main": "build/cjs/index.js",
   "module": "build/esm/index.js",
   "browser": "build/bundle.min.js",

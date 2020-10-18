@@ -5,7 +5,7 @@ const unterpolate = (template, val, options = {}, unflat = true) => {
   const ret = val => (val && unflat ? unflatten(val) : val);
 
   if (typeof template === 'function')
-    return ret(template(val, Object.assign({ how: 'to' }, options)));
+    return ret(template(val, Object.assign({ how: 'unterpolate' }, options)));
 
   if (typeof template === 'string') return ret(unmatch(template, val, options));
 
